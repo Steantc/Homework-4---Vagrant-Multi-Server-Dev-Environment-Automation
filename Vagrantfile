@@ -86,7 +86,8 @@ Vagrant.configure("2") do |config|
    config.vm.provision "file", source: "50-server.cnf", destination: "50-server.cnf"
 
    db.vm.provision "shell", inline: <<-SHELL
-   cp 50-server.cnf /etc/mysql
+   cp 50-server.cnf /etc/mysql/mariadb.conf.d
+   ##service restart mysql
    SHELL
 
   end  #endof the db block
