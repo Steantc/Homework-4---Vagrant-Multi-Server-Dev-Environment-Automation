@@ -32,7 +32,7 @@ Vagrant.configure("2") do |config|
    SHELL
 
    web.vm.provision "shell", inline: <<-SHELL
-   apt-get update
+   ##apt-get update
    apt-get install -y apache2
    SHELL
    
@@ -66,28 +66,29 @@ Vagrant.configure("2") do |config|
    #database server as you can
    db.vm.provision "shell", inline: <<-SHELL
    apt-get update
-   apt-get upgrade -y
+   ##apt-get upgrade -y
    SHELL
    
    db.vm.provision "shell", inline: <<-SHELL
    apt-get update
-   apt-get install -y mariadb-server
-   ##systemctl status mariadb
-   ##mysql -V
-   ##mysql_secure_installation 
-   systemctl restart mariadb
+   apt install -y mariadb-server
+   git clone https://github.com/datacharmer/test_db.git
+   cd test_db
+   mysql -t < employees.sql
+   systemctl restart mariadb 
    SHELL
 
-   db.vm.provision "shell", inline: <<-SHELL
-   cd ~
-   git clone https://github.com/datacharmer/test_db.git
-   SHELL
+   ##db.vm.provision "shell", inline: <<-SHELL
+   ##cd ~
+   ##git clone https://github.com/datacharmer/test_db.git
+   ##mysql -p -t \< ./test_db/employees.sql
+   ##SHELL
 
    config.vm.provision "file", source: "50-server.cnf", destination: "50-server.cnf"
 
    db.vm.provision "shell", inline: <<-SHELL
    cp 50-server.cnf /etc/mysql/mariadb.conf.d
-   ##service restart mysql
+   systemctl restart mariadb
    SHELL
 
   end  #endof the db block
